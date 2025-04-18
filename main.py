@@ -27,7 +27,7 @@ from config import args
 from config import (USE_GPU, MODEL_NAME, IMG_WIDTH, N_EPOCHS, BATCH_SIZE, LEARNING_RATE, PATIENCE, DROPOUT_RATE,
                     TRAIN_RATIO, VAL_RATIO, TEST_RATIO, RANDOM_SEED, THRESHOLD_MODE, GLOBAL_THRESHOLD,
                     device, pin_memory, SCHEDULER_T0, SCHEDULER_T_MULT, MIN_LR)
-import dataset as ds
+from dataset import DataPartition
 from dataset import train_transforms, val_transforms
 from model import SwinTransformerMultiLabel, Classifier
 from trainer import TrainingMonitor, Trainer
@@ -79,44 +79,44 @@ def run(debug=False):
     label_columns = [c for c in df.columns if c not in nonlabel_cols]
     df[label_columns] = df[label_columns].fillna(0)
 
-    df_train_and_val, df_test = ds.group_stratified_split(df, label_columns, "group_id", TEST_RATIO, RANDOM_SEED)
-    rel_val = VAL_RATIO / (TRAIN_RATIO + VAL_RATIO)
-    df_train, df_val = ds.group_stratified_split(df_train_and_val, label_columns, "group_id", rel_val, RANDOM_SEED)
+    df_train_and_val, df_test = ds.group_stratified_split(df, label_columns=label_columns, group_col="group_id", split_ratio=TEST_RATIO, seed=RANDOM_SEED)
+    relative_val_ratio = VAL_RATIO / (TRAIN_RATIO + VAL_RATIO)
+    df_train, df_val = ds.group_stratified_split(df_train_and_val, label_columns=label_columns, group_col="group_id", split_ratio=relative_val_ratio, seed=RANDOM_SEED)
 
-    df_train.to_csv("train_partitions.csv", index=False)
-    df_val.to_csv("val_partitions.csv", index=False)
-    df_test.to_csv("test_partitions.csv", index=False)
-    print("Partition CSV files saved.")
+    df_train.to_csv("train_partition.csv", index=False)
+    df_val.to_csv("val_partition.csv", index=False)
+    df_test.to_csv("test_partition.csv", index=False)
+    print("Partitions saved to .csv files.")
 
-    df_train = pd.read_csv("train_partitions.csv")
-    df_val   = pd.read_csv("val_partitions.csv")
-    df_test  = pd.read_csv("test_partitions.csv")
+    df_train = pd.read_csv("train_partition.csv")
+    df_val   = pd.read_csv("val_partition.csv")
+    df_test  = pd.read_csv("test_partition.csv")
 
     # --- Dataloaders ---
     if USE_GPU:
         if debug:
-            optimal_workers = 2
+            optimal_num_workers = 2
         else:
-            optimal_workers = min(8, os.cpu_count() // 2)
+            optimal_num_workers = min(8, os.cpu_count() // 2)
     else:
-        optimal_workers = 0
-    train_dataset = ds.DataPartition(df_train, label_columns, transform=train_transforms)
-    val_dataset   = ds.DataPartition(df_val,   label_columns, transform=val_transforms)
-    test_dataset  = ds.DataPartition(df_test,  label_columns, transform=val_transforms)
+        optimal_num_workers = 0
+    train_dataset = DataPartition(df_train, label_columns, transform=train_transforms)
+    val_dataset   = DataPartition(df_val,   label_columns, transform=val_transforms)
+    test_dataset  = DataPartition(df_test,  label_columns, transform=val_transforms)
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE,
-                              shuffle=True,  num_workers=optimal_workers,
+                              shuffle=True,  num_workers=optimal_num_workers,
                               pin_memory=pin_memory)
     val_loader   = DataLoader(val_dataset,   batch_size=BATCH_SIZE,
-                              shuffle=False, num_workers=optimal_workers,
+                              shuffle=False, num_workers=optimal_num_workers,
                               pin_memory=pin_memory)
     test_loader  = DataLoader(test_dataset,  batch_size=BATCH_SIZE,
-                              shuffle=False, num_workers=optimal_workers,
+                              shuffle=False, num_workers=optimal_num_workers,
                               pin_memory=pin_memory)
     print(f"Train samples:      {len(train_dataset)}")
     print(f"Validation samples: {len(val_dataset)}")
     print(f"Test samples:       {len(test_dataset)}")
-    print(f"Using num_workers: {optimal_workers}")
+    print(f"Using num_workers: {optimal_num_workers}")
 
     # --- Model / Optimizer / Scheduler ---
     ##### FEEL FREE TO CHANGE #####

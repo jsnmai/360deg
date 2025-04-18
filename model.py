@@ -24,52 +24,40 @@ class AttentionPool2d(nn.Module):
     """
     def __init__(self, in_channels):
         super().__init__()
-        # Query vector of shape [1, C]
-        self.query = nn.Parameter(torch.randn(1, in_channels))
-        # 1×1 convs for keys & values
-        self.to_k = nn.Conv2d(in_channels, in_channels, kernel_size=1, bias=False)
-        self.to_v = nn.Conv2d(in_channels, in_channels, kernel_size=1, bias=False)
-        self.scale = in_channels ** -0.5
+        self.query = nn.Parameter(torch.randn(1, in_channels)) # Learnable query vector of shape [1, C]
+        self.to_key = nn.Conv2d(in_channels, in_channels, kernel_size=1, bias=False) # 1×1 convs for keys & values
+        self.to_value = nn.Conv2d(in_channels, in_channels, kernel_size=1, bias=False)
+        self.scale = in_channels ** -0.5 # Scaling factor for dot‑product attention
 
     def forward(self, x):
         B, C, H, W = x.shape # x: [B, C, H, W]
-        # Keys and values: [B, N, C]
-        k = self.to_k(x).view(B, C, -1).permute(0, 2, 1)
-        v = self.to_v(x).view(B, C, -1).permute(0, 2, 1)
-        # Expand query to [B, 1, C]
-        q = self.query.expand(B, -1).unsqueeze(1)
-        # Attention scores [B, 1, N]
-        attn = torch.softmax(torch.matmul(q, k.transpose(-1, -2)) * self.scale, dim=-1)
-        # Weighted sum of values -> [B, 1, C]
-        out = torch.matmul(attn, v)
-        # Squeeze to [B, C]
-        return out.squeeze(1)
+        # Produce raw keys & values: [B, C, H, W] → [B, C, H*W] then reshape to [B, C, N] and permute to [B, N, C]
+        key = self.to_key(x).reshape(B, C, -1).permute(0, 2, 1) # Keys and values: [B, N, C]
+        value = self.to_value(x).reshape(B, C, -1).permute(0, 2, 1)
+        query = self.query.expand(B, -1).unsqueeze(1) # Expand single query to one per batch: [1, C] → [B, 1, C]
+        attn = torch.softmax(torch.matmul(query, kkey.transpose(-1, -2)) * self.scale, dim=-1) # Compute scaled dot‑product attention: [B, 1, N]
+        output = torch.matmul(attn, value) # Weighted sum of values: [B, 1, C]
+        return output.squeeze(1) # Squeeze to [B, C]
 
 
 class SwinTransformerMultiLabel(nn.Module):
     def __init__(self, num_classes, pretrained=True):
         super().__init__()
         # 1) Model backbone without pooling/head
-        self.model = timm.create_model(
-            MODEL_NAME,
-            pretrained=pretrained,
-            num_classes=0,
-            global_pool=""
-        )
-        in_features = self.model.num_features
-
+        self.model = timm.create_model(MODEL_NAME, pretrained=pretrained, num_classes=0, global_pool="")
         # 2) Attention pool + dropout + classifier head
-        self.attn_pool = AttentionPool2d(in_features)
-        self.dropout   = nn.Dropout(DROPOUT_RATE)
-        self.fc        = nn.Linear(in_features, num_classes)
+        in_features = self.model.num_features
+        self.attn = AttentionPool2d(in_features)
+        self.dropout = nn.Dropout(DROPOUT_RATE)
+        self.fc = nn.Linear(in_features, num_classes)
 
     def forward(self, x):
-        feat_map = self.model.forward_features(x) # Extract feature map [B, H, W, C]
-        feat_map = feat_map.permute(0, 3, 1, 2).contiguous() # Permute to [B, C, H, W]
+        feat_map = self.model.forward_features(x) # Backbone -> feature map [B, H', W', C], downsampled
+        feat_map = feat_map.permute(0, 3, 1, 2) # Permute to [B, C, H', W']
         pooled = self.attn_pool(feat_map) # Attention pooling -> [B, C]
         # Head
         dropped  = self.dropout(pooled)
-        logits   = self.fc(dropped)  # [B, num_classes]
+        logits   = self.fc(dropped)  # Pass through a linear fc layer to get one score per class for each example in the batch: [B, num_classes]
         return logits
 
 
@@ -91,25 +79,25 @@ class Classifier:
         self.model = model.to(device).eval()
         self.transform = transform
         self.device = device
+        self.labels = labels 
         self.thresholds = thresholds
-        self.labels = labels or []
 
-    def predict(self, pil_img):
-        tensor = self.transform(pil_img).unsqueeze(0).to(self.device)
+    def predict(self, img):
+        tensor = self.transform(img).unsqueeze(0).to(self.device)
         with torch.no_grad():
             logits = self.model(tensor)
             probs  = torch.sigmoid(logits).cpu().numpy()[0]  # [K]
-        return (probs >= self.thresholds).astype(float)
+        return (probs >= self.thresholds).astype(int)
 
     def save(self, base_name):
         torch.save(self.model.state_dict(), base_name + ".pt") # Save model weights
-        thresh_list = self.thresholds.tolist() # Gather thresholds into a JSON‑safe list
+        thresholds_list = self.thresholds.tolist() # Gather thresholds into a JSON‑safe list
         config = { # Build and write the JSON metadata config
-            "thresholds": thresh_list,
+            "thresholds": thresholds_list,
             "labels": self.labels
         }
-        with open(base_name + ".json", "w") as f:
-            json.dump(config, f, indent=2)
+        with open(base_name + ".json", "w") as file:
+            json.dump(config, file, indent=2)
         print(f"Model Weights saved as {base_name}.pt | Classifier Metadata saved as {base_name}.json")
 
     @staticmethod

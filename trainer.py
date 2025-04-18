@@ -20,8 +20,8 @@ class TrainingMonitor:
     def __init__(self):
         self.train_losses = []
         self.val_losses = []
-        self.train_accuracies = []
-        self.val_accuracies = []
+        # self.train_accuracies = []
+        # self.val_accuracies = []
         self.val_mAPs = []
         self.start_time = time.time()
 
@@ -31,8 +31,8 @@ class TrainingMonitor:
         """
         self.train_losses.append(train_loss)
         self.val_losses.append(val_loss)
-        self.train_accuracies.append(train_acc)
-        self.val_accuracies.append(val_acc)
+        # self.train_accuracies.append(train_acc)
+        # self.val_accuracies.append(val_acc)
         self.val_mAPs.append(val_map)
 
     def finish(self):
@@ -111,9 +111,7 @@ class Trainer:
         self.epochs_no_improve = 0
         self.best_state = None
         self.scaler = GradScaler()
-
-        # store the base LR for warm‑up calculations
-        self.base_lr = optimizer.param_groups[0]['lr']
+        self.base_lr = optimizer.param_groups[0]['lr'] # store the base LR for warm‑up calculations
 
     def train_epoch(self):
         self.model.train()
@@ -177,10 +175,7 @@ class Trainer:
         all_labels = np.vstack(all_labels)
 
         # Per‐class AP and mean AP
-        per_class_AP = [
-            average_precision_score(all_labels[:, i], all_probs[:, i])
-            for i in range(all_labels.shape[1])
-        ]
+        per_class_AP = [average_precision_score(all_labels[:, i], all_probs[:, i]) for i in range(all_labels.shape[1])]
         val_mAP = float(np.mean(per_class_AP))
 
         return val_loss, val_acc, per_class_AP, val_mAP
@@ -204,13 +199,7 @@ class Trainer:
             self.plateau_scheduler.step(val_loss)
 
             # — epoch summary —
-            print(
-                f"\nEpoch {epoch+1}: "
-                f"Train Loss={train_loss:.4f} | "
-                f"Val Loss={val_loss:.4f} | "
-                f"Val mAP={val_mAP:.4f} "
-                f"({mins} min {secs} sec)"
-            )
+            print(f"\nEpoch {epoch+1}: Train Loss={train_loss:.4f} | Val Loss={val_loss:.4f} | Val mAP={val_mAP:.4f} ({mins} min {secs} sec)")
 
             # — early stopping & per‐class AP logging —
             if val_loss < self.best_val_loss:

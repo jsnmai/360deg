@@ -113,14 +113,13 @@ def group_stratified_split(df, label_cols, group_col, split_ratio, seed):
     Returns:
         Tuple[pd.DataFrame, pd.DataFrame]: Two DataFrame splits (first split and second split).
     """
-    unique_groups = df[group_col].unique()
+    unique_groups_array = df[group_col].unique()
     aggregated_labels = [] 
     for group in unique_groups:
         group_df = df[df[group_col] == group] # Extract the subset of rows for this group.
         agg_labels = group_df[label_cols].max()  # Use max() across rows for each label column to simulate a logical OR
         aggregated_labels.append(agg_labels)
 
-    unique_groups_array = np.array(unique_groups)
     aggregated_labels_array = np.array(aggregated_labels)
     # Initialize the multilabel stratified shuffle split with the desired test size and random seed.
     splitter = MultilabelStratifiedShuffleSplit(n_splits=1, test_size=split_ratio, random_state=seed)
@@ -140,15 +139,14 @@ def group_stratified_split(df, label_cols, group_col, split_ratio, seed):
 # Dataset Class
 # ===============================================================
 class DataPartition(Dataset):
-    def __init__(self, data_frame, label_columns, transform=None):
+    def __init__(self, df, label_columns, transform=None):
         """
         Initialize the dataset with a DataFrame and transform pipeline.
         Args:
-            data_frame (pd.DataFrame): DataFrame with image paths and labels.
+            df (pd.DataFrame): DataFrame with image paths and labels.
             label_columns (list): List of label column names.
             transform (callable, optional): Data augmentation pipeline.
         """
-        self.df = data_frame.copy()
         self.label_columns = label_columns
         self.transform = transform
         self.samples = [(row["image_path"],
