@@ -86,16 +86,16 @@ class Classifier:
             probabilities  = torch.sigmoid(logits).cpu().numpy()[0]  # [K]
         return (probabilities >= self.thresholds).astype(int)
 
-    def save(self, filename):
-        torch.save(self.model.state_dict(), filename + ".pt") # Save model weights
+    def save(self, base_filename):
+        torch.save(self.model.state_dict(), base_filename + ".pt") # Save model weights
         thresholds_list = self.thresholds.tolist() # Gather thresholds into a JSON‑safe list
         config = { # Build and write the JSON metadata config
             "thresholds": thresholds_list,
             "labels": self.labels
         }
-        with open(filename + ".json", "w") as file:
+        with open(base_filename + ".json", "w") as file:
             json.dump(config, file, indent=2)
-        print(f"Model Weights saved as {filename}.pt | Classifier Metadata saved as {filename}.json")
+        print(f"Model Weights saved as {base_filename}.pt | Classifier Metadata saved as {base_filename}.json")
 
     @staticmethod
     def load(json_path, transform, device):
