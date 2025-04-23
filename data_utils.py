@@ -154,21 +154,28 @@ class DataPartition(Dataset):
 # ===============================================================
 # Data Augmentation Pipelines
 # ===============================================================
-train_transforms = transforms.Compose([
-    transforms.Resize((IMG_WIDTH, IMG_WIDTH)),
-    transforms.RandomHorizontalFlip(p=0.5),  # 50% chance to flip horizontally
-    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-    transforms.RandomApply([transforms.GaussianBlur(3)], p=0.2),
-    transforms.RandomApply([transforms.RandomAffine(       # Randomly apply
-                            degrees=10,                    # small rotation: rotate within [-10, 10] degrees
-                            translate=(0.05, 0.05),        # small translation: shift up to 5% of the image dimensions
-                            scale=(0.95, 1.05))], p=0.5),  # slightly zoom in or out
-    transforms.ToTensor(),
-    transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
-])
+# train_transforms = transforms.Compose([
+#     transforms.Resize((IMG_WIDTH, IMG_WIDTH)),
+#     transforms.RandomHorizontalFlip(p=0.5),  # 50% chance to flip horizontally
+#     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+#     transforms.RandomApply([transforms.GaussianBlur(3)], p=0.2),
+#     transforms.RandomApply([transforms.RandomAffine(       # Randomly apply
+#                             degrees=10,                    # small rotation: rotate within [-10, 10] degrees
+#                             translate=(0.05, 0.05),        # small translation: shift up to 5% of the image dimensions
+#                             scale=(0.95, 1.05))], p=0.5),  # slightly zoom in or out
+#     transforms.ToTensor(),
+#     transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
+# ])
+
+# val_transforms = transforms.Compose([
+#     transforms.Resize((IMG_WIDTH, IMG_WIDTH)),
+#     transforms.ToTensor(),
+#     transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
+# ])
 
 val_transforms = transforms.Compose([
-    transforms.Resize((IMG_WIDTH, IMG_WIDTH)),
+    transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
+    transforms.Normalize(mean=[0.4815, 0.4578, 0.4082], std=[0.2686, 0.2613, 0.2758]),
 ])
+train_transforms = val_transforms
