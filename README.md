@@ -9,7 +9,7 @@
 **4. full_pipeline.ipynb:** Full end-to-end code for finetuning a pretrained model (including the partitioning from partitioning.ipynb minus the visualizations).
 
 **5. csra.ipynb:** full_pipeline for finetuning a pretrained model + class-specific residual attention (CSRA)
-   - Paper: https://arxiv.org/pdf/2108.02456v2 
+   - [ (Paper) ](https://arxiv.org/pdf/2108.02456v2 ) [ (Code) ](https://github.com/Kevinz-code/CSRA/blob/master/pipeline/csra.py)
 
 **6. mldecoder.ipynb:** full_pipeline for finetuning a pretrained model + ML Decoder head
    - Paper: https://arxiv.org/pdf/2111.12933v2
