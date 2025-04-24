@@ -2,7 +2,7 @@
 
 **1. imagesplit.ipynb:** For splitting panoramic images into left/right halves.
 
-**2. partitioning.ipynb:** Loads CSV or NDJSON file to a pandas dataframe, creates groups for left/right pairs, performs stratified sampling to create train/validation/test splits to ensure the proportion of each class in each split is the same as the in the original dataset.
+**2. partitioning.ipynb:** Loads CSV or NDJSON label file to a pandas dataframe, creates groups for left/right pairs, performs stratified sampling to create train/validation/test splits ensuring the proportion of each class in each split is the same as the in the original dataset, finally plots class distribution for each split for visualization and comparison.
 
 **3. datapartition.py:** A DataPartition class that must sit separately as a script and imported to the following Jupyter Notebooks for GPU training to work:
 
