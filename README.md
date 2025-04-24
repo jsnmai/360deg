@@ -1,3 +1,5 @@
+# Files
+
 **1. imagesplit.ipynb:** For splitting panoramic images into left/right halves.
 
 **2. partitioning.ipynb:** Loads CSV or NDJSON file to a pandas dataframe, creates groups for left/right pairs, performs stratified sampling to create train/validation/test splits to ensure the proportion of each class in each split is the same as the in the original dataset.
@@ -11,3 +13,6 @@
 
 **6. mldecoder.ipynb:** full_pipeline for finetuning a pretrained model + ML Decoder head
    - Paper: https://arxiv.org/pdf/2111.12933v2
+
+# Resources
+[Implementation guide for finetuning a pretrained model](https://www.kaggle.com/code/gohweizheng/swin-transformer-beginner-friendly-notebook#1.-Introduction) (specifically Swin)
