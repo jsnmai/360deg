@@ -17,4 +17,7 @@
    - [ (Official Code) ](https://github.com/Alibaba-MIIL/ML_Decoder/blob/main/src_files/ml_decoder/ml_decoder.py)
 
 # Resources
-[Implementation guide for finetuning a pretrained model](https://www.kaggle.com/code/gohweizheng/swin-transformer-beginner-friendly-notebook#1.-Introduction) (specifically Swin)
+- [Implementation guide for finetuning a pretrained model](https://www.kaggle.com/code/gohweizheng/swin-transformer-beginner-friendly-notebook#1.-Introduction) (specifically Swin Transformer)
+
+- [Pretrained Models to choose from timm](https://huggingface.co/models?library=timm)
+  - [Benchmarks for choosing a pretrained Swin Transformer model](https://github.com/microsoft/Swin-Transformer/blob/main/MODELHUB.md#imagenet-22k-pretrained-swin-moe-models)
