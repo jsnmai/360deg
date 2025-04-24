@@ -20,6 +20,8 @@
 - [Implementation guide for finetuning a pretrained model](https://www.kaggle.com/code/gohweizheng/swin-transformer-beginner-friendly-notebook#1.-Introduction) (specifically Swin Transformer)
 
 - [Pretrained Models to choose from timm](https://huggingface.co/models?library=timm)
-  - [Benchmarks for choosing a pretrained Swin Transformer model](https://github.com/microsoft/Swin-Transformer/blob/main/MODELHUB.md#imagenet-22k-pretrained-swin-moe-models) (*benchmarks are for regular image classification on ImageNet dataset)
-  - [Benchmarks for choosing/comparing other pretrained models](https://paperswithcode.com/sota/image-classification-on-imagenet) (*benchmarks are for regular image classification on ImageNet dataset)
-  - 
+  - [Benchmarks for choosing a pretrained Swin Transformer model](https://github.com/microsoft/Swin-Transformer/blob/main/MODELHUB.md#imagenet-22k-pretrained-swin-moe-models)
+    (*benchmarks are for regular image classification on ImageNet dataset)
+  - [Benchmarks for choosing/comparing other pretrained models](https://paperswithcode.com/sota/image-classification-on-imagenet)
+    (*benchmarks are for regular image classification on ImageNet dataset)
+    
