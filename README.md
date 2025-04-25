@@ -6,7 +6,7 @@
 
 **3. datapartition.py:** A DataPartition class that must sit separately as a script and imported to the following Jupyter Notebooks for GPU training to work:
 
-**4. full_pipeline.ipynb:** Full end-to-end code for finetuning a pretrained model (including the partitioning from partitioning.ipynb minus the visualizations).
+**4. full_pipeline.ipynb:** Full end-to-end code for finetuning a pretrained model (including the partitioning from partitioning.ipynb minus the visualizations). Current version comes with and is tested for SwinV2 Transformer model. See "Resources" for choosing other models.
 
 **5. csra.ipynb:** full_pipeline for finetuning a pretrained model + class-specific residual attention (CSRA)
    - [ (Paper) ](https://arxiv.org/pdf/2108.02456v2 )
