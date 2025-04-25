@@ -20,6 +20,8 @@
 - **demo_360.ndjson:** A dummy Label file mirroring the structure of how our LabelBox labels exports. Used to inspect structure and create appropriate code while images were still being labeled. Notes on the structure can be found [here](https://docs.google.com/document/d/1F8RFUZPHlVVkZzpF3bIoOaOA62DqiIFhOYRDARhMce8/edit?usp=sharing).
 
 # Resources
+- All testing and development was done on this [Multi Instance Multi Label Dataset](https://www.kaggle.com/datasets/twopothead/miml-image-data) with their miml_labels_1.csv labels. Contains 2000 images with 5 classes (desert, mountains, sea, sunset, trees).
+
 - [Implementation guide for finetuning a pretrained model](https://www.kaggle.com/code/gohweizheng/swin-transformer-beginner-friendly-notebook#1.-Introduction) (specifically Swin Transformer)
 
 - [Pretrained Models to choose from timm](https://huggingface.co/models?library=timm)
@@ -32,4 +34,5 @@
   - https://www.evidentlyai.com/classification-metrics/classification-threshold
   - https://www.mathworks.com/help/deeplearning/ug/multilabel-image-classification-using-deep-learning.html
   - https://www.mdpi.com/2076-3417/13/13/7591
+ 
     
