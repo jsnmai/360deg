@@ -24,4 +24,9 @@
     (*benchmarks are for regular image classification on ImageNet dataset)
   - [Benchmarks for choosing/comparing other pretrained models](https://paperswithcode.com/sota/image-classification-on-imagenet)
     (*benchmarks are for regular image classification on ImageNet dataset)
+
+- Optimal Prediction Thresholding Strategies:
+  - https://www.evidentlyai.com/classification-metrics/classification-threshold
+  - https://www.mathworks.com/help/deeplearning/ug/multilabel-image-classification-using-deep-learning.html
+  - https://www.mdpi.com/2076-3417/13/13/7591
     
