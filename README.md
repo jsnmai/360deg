@@ -34,5 +34,21 @@
   - https://www.evidentlyai.com/classification-metrics/classification-threshold
   - https://www.mathworks.com/help/deeplearning/ug/multilabel-image-classification-using-deep-learning.html
   - https://www.mdpi.com/2076-3417/13/13/7591
- 
-    
+
+ # Getting Started
+ ### Recommend using a virtual environment ([conda](https://www.anaconda.com/download) is common for ML) to contain all work/imported libraries
+ Create conda env with:
+
+    conda create -n YourNameHere python=3.11
+
+To activate conda env:
+
+    conda activate YourNameHere
+
+ ### Install Required Packages
+    conda install numpy pandas scikit-learn matplotlib pillow -c conda-forge
+
+    conda install pytorch torchvision torchaudio -c pytorch
+
+    pip install iterative-stratification timm
+   
