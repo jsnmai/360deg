@@ -16,6 +16,9 @@
    - [ (Paper) ](https://arxiv.org/pdf/2111.12933v2)
    - [ (Official Code) ](https://github.com/Alibaba-MIIL/ML_Decoder/blob/main/src_files/ml_decoder/ml_decoder.py)
 
+### Miscellaneous Files
+**demo_360.ndjson:** A dummy Label file mirroring the structure of how our LabelBox labels exports. Used to inspect structure and create appropriate code while images were still being labeled. Notes on the structure can be found [here](https://docs.google.com/document/d/1F8RFUZPHlVVkZzpF3bIoOaOA62DqiIFhOYRDARhMce8/edit?usp=sharing).
+
 # Resources
 - [Implementation guide for finetuning a pretrained model](https://www.kaggle.com/code/gohweizheng/swin-transformer-beginner-friendly-notebook#1.-Introduction) (specifically Swin Transformer)
 
